@@ -25,6 +25,12 @@ clock = pygame.time.Clock()
 
 carImg = pygame.image.load('./Cars/Mustang.png')
 
+def things_dodged(count):
+    font = pygame.font.SysFont(None, 25)
+    text = font.render("Dodged: "+str(count), True, GREEN)
+    gameDisplay.blit(text,(0,0))
+
+
 def things(thingx, thingy, thingw,thingh, color):
     pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
 
@@ -57,10 +63,11 @@ def game_loop():
 
     thing_startx = random.randrange(0, display_width)
     thing_starty = -600
-    thing_speed = 7
+    thing_speed = 4
     thing_width = 100
     thing_height: int = 100
-
+    thing_count = 1
+    dodged = 0
     game_Exit = False
 
     while not game_Exit:
@@ -87,8 +94,8 @@ def game_loop():
 
         things(thing_startx, thing_starty, thing_width, thing_height, RED)
         thing_starty +=thing_speed
-
         car(x,y)
+        things_dodged(dodged)
 
         if x > display_width - car_width or x < 0:
             # x_change = 0
@@ -97,10 +104,13 @@ def game_loop():
         if thing_starty > display_height:
             thing_starty = 0 - thing_height
             thing_startx = random.randrange(0, display_width-thing_width)
+            dodged += 1
+            thing_speed +=0.5
 
         if y < thing_starty+thing_height:
             print('Y crossover')
-            if x > thing_startx and x < thing_startx + thing_width or x + car_width > thing_startx and x + car_width < thing_startx + thing_width:
+            # if x > thing_startx and x < (thing_startx + thing_width) or (x + car_width) > thing_startx and (x + car_width) < (thing_startx + thing_width):
+            if thing_startx < x < (thing_startx + thing_width) or thing_startx < (x + car_width) < (thing_startx + thing_width):
                 print('X crossoveer')
                 crashed()
 
